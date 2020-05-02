@@ -3,37 +3,27 @@ package com.example.bakalarka10;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.CalendarContract;
 import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 public class NewEvent extends AppCompatActivity {
 
     public static final String TAG = "NewEvent";
-    private static QueryHandler asyncQueryHandler;
+    long start = System.currentTimeMillis();
+    long end = System.currentTimeMillis()+1000000;
+    String id = null;
 
-    private EditText s_date,e_date,title_event,location,description;
+    private EditText s_date,e_date,title_event,location_event,description_event;
     private int mYear;
     private int mMonth;
     private int mDay;
@@ -43,6 +33,17 @@ public class NewEvent extends AppCompatActivity {
     private Context ctx = this;
     ArrayList<String> accounts;
     MaterialButton button;
+    public String title,description,location;
+    EventNew eventNew;
+
+
+    EventNew setStartInsertValues() {
+
+        Log.d(TAG, "setStartInsertValues: " + title);
+        eventNew = new EventNew(EventNew.title, EventNew.description, EventNew.location, start, end, id);
+
+        return eventNew;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,20 +58,19 @@ public class NewEvent extends AppCompatActivity {
         s_date = findViewById(R.id.starting_date);
         e_date = findViewById(R.id.ending_date);
         title_event = findViewById(R.id.title_event);
-        location = findViewById(R.id.location);
+        location_event = findViewById(R.id.location);
         button = findViewById(R.id.add_button);
+        description_event = findViewById(R.id.description);
+
 
         final long start, end;
         final Calendar beginTime = Calendar.getInstance();
         beginTime.set(mYear,mMonth,mDay,mDay,mMinute);
-       // start = beginTime.getTimeInMillis();
-       // end = beginTime.getTimeInMillis();
+        //start = beginTime.getTimeInMillis();
+        //end = beginTime.getTimeInMillis()+1000000;
 
-        String title = "CAUKO";
-        long s = System.currentTimeMillis();
-        long e = System.currentTimeMillis()+1;
-        QueryHandler.insertEvent(ctx, s,
-                e, title);
+        final long s = System.currentTimeMillis();
+        final long e = System.currentTimeMillis()+1;
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -79,21 +79,15 @@ public class NewEvent extends AppCompatActivity {
             public void onClick(View v) {
                 Log.d(TAG, "onClick: title: " + title_event.getText().toString());
 
+                 EventNew.title = title_event.getText().toString();
+                 EventNew.location = location_event.getText().toString();
+                EventNew.description = description_event.getText().toString();
 
-
+                QueryHandler.insertEvent(ctx);
 
             }
+
         });
-
-        getAccounts();
-
-        //ArrayList<String> account = getAccounts();
-
-        //AutoCompleteTextView select_account = findViewById(R.id.account);
-
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getAccounts());
-        //select_account.setAdapter(adapter);
-
 
         s_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +102,13 @@ public class NewEvent extends AppCompatActivity {
                 showDatepicker(e_date);
             }
         });
+
+        // getAccounts();
+        //ArrayList<String> account = getAccounts();
+        //AutoCompleteTextView select_account = findViewById(R.id.account);
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getAccounts());
+        //select_account.setAdapter(adapter);
+
     }
 
     private void showDatepicker(final EditText editText){
@@ -150,7 +151,9 @@ public class NewEvent extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private ArrayList<String> getAccounts() {
+
+    // tato metoda sa da pouzit pri vbrani kalendara do ktoreho vkladat event
+    /*ArrayList<String> getAccounts() {
         final String[] EVENT_PROJECTION = new String[] {
                 CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
                 CalendarContract.Calendars.ACCOUNT_NAME,
@@ -178,23 +181,8 @@ public class NewEvent extends AppCompatActivity {
             }
         }
         return accounts;
-    }
+    }*/
 
-    private void addEvent() {
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(mYear,mMonth,mDay,mDay,mMinute);
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(mYear,mMonth,mDay,mDay,mMinute+1);
-
-        ContentResolver cr = getContentResolver();
-        ContentValues values = new ContentValues();
-        values.put(CalendarContract.Events.TITLE, "AHOJ");
-        values.put(CalendarContract.Events.DTSTART, beginTime.getTimeInMillis());
-        values.put(CalendarContract.Events.DTEND, endTime.getTimeInMillis());
-        values.put(CalendarContract.Events.CALENDAR_ID, 1);
-        Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-
-    }
 
 }
 

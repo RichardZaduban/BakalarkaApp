@@ -18,11 +18,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String TAG = "NewEvent";
+
     Cursor cursor;
     int myPermissionRequestCalendar = 0;
     RecyclerView recyclerView;
@@ -61,12 +65,16 @@ public class MainActivity extends AppCompatActivity {
 
     // tato metoda vrati udaje z Events Tabulky a vytvori array objektov triedy Event a kazdy objekt zobrazi ako samostatnu kartu
 
+
     private void getEvents() {
             final String[] EVENT_PROJECTION = new String[]{
                     CalendarContract.Events.TITLE,                         // 0
                     CalendarContract.Events.DESCRIPTION,                   // 1
                     CalendarContract.Events.EVENT_LOCATION,                // 2
-                    CalendarContract.Events.ACCOUNT_NAME                   // 3
+                    CalendarContract.Events.ACCOUNT_NAME,                   // 3
+                    CalendarContract.Events._ID,
+                    CalendarContract.Events.DTSTART,
+                    CalendarContract.Events.DTEND
             };
 
             ContentResolver cr = getContentResolver();
@@ -77,26 +85,35 @@ public class MainActivity extends AppCompatActivity {
             );
 
 
-            if (cursor.getCount() > 0) {
+        assert cursor != null;
+        if (cursor.getCount() > 0) {
 
-                events = new ArrayList<>();
+                events = new ArrayList<Event>();
 
-                while (cursor.moveToNext()) {
+                assert cursor != null;
+            while (cursor.moveToNext()) {
                     if (cursor != null) {
 
 
                             String titleValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.TITLE));
                             String descriptionValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION));
                             String locationValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION));
+                            long startValue = cursor.getLong(cursor.getColumnIndex(CalendarContract.Events.DTSTART));
+                            long endValue = cursor.getLong(cursor.getColumnIndex(CalendarContract.Events.DTEND));
+                            String idValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events._ID));
                             String nameValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.ACCOUNT_NAME));
 
-                            Event event = new Event(titleValue, descriptionValue, null, null);
+
+                            Event event = new Event(titleValue, descriptionValue, locationValue, idValue, startValue, endValue);
 
                             events.add(event);
+                        Log.d(TAG, "getEvents: "+ titleValue);
+                        Log.d(TAG, "getEvents: "+ event);
+                        Log.d(TAG, "getEvents: "+ nameValue);
 
                             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                            adapter = new Adapter(this, events);
+                            adapter = new Adapter(this,events);
                             recyclerView.setAdapter(adapter);
 
                     }

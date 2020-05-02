@@ -68,19 +68,34 @@
             android:textSize="20sp"
             />
     </android.support.design.widget.TextInputLayout>
-    <AutoCompleteTextView
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/account"
-        android:hint="Account"
-        android:completionThreshold="1"
-        android:textSize="20sp"
-        android:layout_marginTop="12dp"
-        />
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        >
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/description"
+            android:hint="Description"
+            android:inputType="text"
+            android:textSize="20sp"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <android.support.design.button.MaterialButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/add_button"
+        android:onClick="store_input"
         android:textColor="@color/colorPrimary"
         android:text="@string/add"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
@@ -90,6 +105,7 @@
         android:elevation="8dp"
 
         />
+    </RelativeLayout>
 
 
 

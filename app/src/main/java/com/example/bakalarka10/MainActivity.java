@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     // tato metoda vrati udaje z Events Tabulky a vytvori array objektov triedy Event a kazdy objekt zobrazi ako samostatnu kartu
 
     private void getEvents() {
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestCalendarPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.READ_CALENDAR)){
+                Manifest.permission.READ_CALENDAR) && ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CALENDAR)){
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
                     .setMessage("This permission is needed for app to load data from your calendar")
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.READ_CALENDAR},
+                                    new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
                                     myPermissionRequestCalendar);
                         }
                     })
@@ -132,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         else
                 {
                     ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.READ_CALENDAR},
+                            new String[]{Manifest.permission.READ_CALENDAR,Manifest.permission.WRITE_CALENDAR},
                             myPermissionRequestCalendar);
                 }
         }

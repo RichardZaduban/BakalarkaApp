@@ -5,5 +5,4 @@
         <item name="colorPrimaryDark">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
 </resources>

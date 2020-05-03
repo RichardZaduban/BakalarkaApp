@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Bakalarka1.0</string>
-    <string name="loading_text">Taskify</string>
+    <string name="app_name">Event manager</string>
     <string name="add">ADD</string>
 </resources>

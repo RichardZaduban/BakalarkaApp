@@ -3,23 +3,34 @@ package com.example.bakalarka10;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
 
@@ -33,15 +44,65 @@ public class MainActivity extends AppCompatActivity {
     Adapter adapter;
     ArrayList<Event> events;
     FloatingActionButton fab;
-
+    SwipeRefreshLayout swipeRefreshLayout;
+    RelativeLayout layout;
+    Event event;
+    Snackbar snackbar;
 
     @SuppressLint("ResourceType")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
         recyclerView = findViewById(R.id.recyclerview);
         fab = findViewById(R.id.add);
+        layout = findViewById(R.id.main_relative);
+
+
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                if (direction == ItemTouchHelper.LEFT) {
+               String eventToDelete = adapter.deleteEvent(position);
+
+                    final String DEBUG_TAG = "Start delete";
+
+                    long eventID = Long.parseLong(eventToDelete);
+                   // ContentResolver cr = getContentResolver();
+                   // ContentValues values = new ContentValues();
+                    Uri deleteUri = null;
+                    deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventID);
+                    int rows = getContentResolver().delete(deleteUri, null, null);
+                    Log.i(DEBUG_TAG, "Rows deleted: " + rows);
+
+                }
+
+                snackbar = Snackbar.make(layout, "Event was was deleted", Snackbar.LENGTH_INDEFINITE);
+                snackbar .setDuration(3000);
+                snackbar.show();
+            }
+
+        };
+            new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(recyclerView);
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getEvents();
+                adapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         if (ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED) ;
@@ -75,13 +136,17 @@ public class MainActivity extends AppCompatActivity {
                     CalendarContract.Events._ID,
                     CalendarContract.Events.DTSTART,
                     CalendarContract.Events.DTEND
+
             };
 
             ContentResolver cr = getContentResolver();
             Uri uri = CalendarContract.Events.CONTENT_URI;
 
+            long selectionTime = System.currentTimeMillis()-100000;
+        String selection = "(( " + CalendarContract.Events.DTSTART + " >= " + selectionTime + "))";
 
-            cursor = cr.query(uri, EVENT_PROJECTION, null, null, CalendarContract.Events.DTSTART
+
+            cursor = cr.query(uri, EVENT_PROJECTION, selection, null, CalendarContract.Events.DTSTART
             );
 
 
@@ -104,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                             String nameValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.ACCOUNT_NAME));
 
 
+
                             Event event = new Event(titleValue, descriptionValue, locationValue, idValue, startValue, endValue);
 
                             events.add(event);
@@ -114,11 +180,12 @@ public class MainActivity extends AppCompatActivity {
                             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                             adapter = new Adapter(this,events);
+                        Log.d(TAG, "getEvents: " + adapter);
                             recyclerView.setAdapter(adapter);
-
                     }
                 }
             }
+
 
         }
 
@@ -167,6 +234,30 @@ public class MainActivity extends AppCompatActivity {
             }
     }
 }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.events_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
+    }
+
+
 }
 
 

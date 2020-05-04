@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             ContentResolver cr = getContentResolver();
             Uri uri = CalendarContract.Events.CONTENT_URI;
 
-            long selectionTime = System.currentTimeMillis()-100000;
+            long selectionTime = System.currentTimeMillis()-86400000;
         String selection = "(( " + CalendarContract.Events.DTSTART + " >= " + selectionTime + "))";
 
         // Prechádzanie udalostí v databáze

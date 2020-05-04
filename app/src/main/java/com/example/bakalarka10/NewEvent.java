@@ -116,6 +116,7 @@ public class NewEvent extends AppCompatActivity {
         int mYearParam = sYear;
         int mMonthParam = sMonth-1;
         int mDayParam = sDay;
+        final int[] msplus = new int[1];
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(ctx,
                 new DatePickerDialog.OnDateSetListener() {
@@ -127,6 +128,7 @@ public class NewEvent extends AppCompatActivity {
                         sMonth = monthOfYear;
                         sYear=year;
                         sDay=dayOfMonth;
+                        msplus[0] = sMonth+1;
 
 
                     }
@@ -143,7 +145,7 @@ public class NewEvent extends AppCompatActivity {
                         sHour = pHour;
                         sMinute = pMinute;
 
-                        editText.setText(sYear + "-" + sMonth + "-" + sDay + "-" + sHour + ":" + sMinute);
+                        editText.setText(sYear + "-" + msplus[0] + "-" + sDay + "-" + sHour + ":" + sMinute);
                     }
                 }, sHour, sMinute, true);
 
@@ -157,6 +159,7 @@ public class NewEvent extends AppCompatActivity {
         int mYearParam = mYear;
         int mMonthParam = mMonth-1;
         int mDayParam = mDay;
+        final int[] mplus = new int[1];
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(ctx,
                 new DatePickerDialog.OnDateSetListener() {
@@ -168,6 +171,8 @@ public class NewEvent extends AppCompatActivity {
                         mMonth = monthOfYear;
                         mYear=year;
                         mDay=dayOfMonth;
+                        mplus[0] = mMonth+1;
+
 
 
                     }
@@ -183,7 +188,7 @@ public class NewEvent extends AppCompatActivity {
                         mHour = pHour;
                         mMinute = pMinute;
 
-                        editText.setText(mYear + "-" + mMonth + "-" + mDay + "-" + mHour + ":" + mMinute);
+                        editText.setText(mYear + "-" + mplus[0] + "-" + mDay + "-" + mHour + ":" + mMinute);
                     }
                 }, mHour, mMinute, true);
 

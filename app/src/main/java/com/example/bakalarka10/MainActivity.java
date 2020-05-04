@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         layout = findViewById(R.id.main_relative);
 
 
+        // ItemTouchHelper slúži na zaznamenávanie interakcie s prvkami v RecyclerView
+
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
                     final String DEBUG_TAG = "Start delete";
 
+                    //Vymazanie udalosti z databázy
+
                     long eventID = Long.parseLong(eventToDelete);
                    // ContentResolver cr = getContentResolver();
                    // ContentValues values = new ContentValues();
@@ -86,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+                // Vtvorenie snackbaru po vymazaní udalosti
+
                 snackbar = Snackbar.make(layout, "Event was was deleted", Snackbar.LENGTH_INDEFINITE);
                 snackbar .setDuration(3000);
                 snackbar.show();
@@ -93,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
 
         };
             new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(recyclerView);
+
+        // ItemTouchHelper slúži na zaznamenávanie interakcie s prvkami v RecyclerView
+
 
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -112,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         getEvents();
 
+        // Využitie floating buttonu na prejdenie na aktivitu pridávania
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    // tato metoda vrati udaje z Events Tabulky a vytvori array objektov triedy Event a kazdy objekt zobrazi ako samostatnu kartu
+    // Táto metóda vráti udalosti kalendára
 
 
     private void getEvents() {
@@ -145,11 +155,12 @@ public class MainActivity extends AppCompatActivity {
             long selectionTime = System.currentTimeMillis()-100000;
         String selection = "(( " + CalendarContract.Events.DTSTART + " >= " + selectionTime + "))";
 
+        // Prechádzanie udalostí v databáze
 
             cursor = cr.query(uri, EVENT_PROJECTION, selection, null, CalendarContract.Events.DTSTART
             );
 
-
+            // Prechádzanie udalostí v databáze
         assert cursor != null;
         if (cursor.getCount() > 0) {
 
@@ -168,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                             String idValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events._ID));
                             String nameValue = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.ACCOUNT_NAME));
 
-
+                            //Pridanie hodnôt z kalendára do recyclerView
 
                             Event event = new Event(titleValue, descriptionValue, locationValue, idValue, startValue, endValue);
 
@@ -189,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-    //tato metoda sluzi na poziadanie o povolenia aplikacie
+    //Metóda slúžiaca na získanie potrebných povolení
 
     private void requestCalendarPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -235,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
+// Metódy na vyhľadávanie v udalostich podľa názvu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();

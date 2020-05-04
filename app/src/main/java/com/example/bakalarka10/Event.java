@@ -1,5 +1,6 @@
 package com.example.bakalarka10;
 
+//Model získanej udalosti z kalendára
 public class Event {
      String title;
      String description;

@@ -36,15 +36,15 @@ public class QueryHandler extends AsyncQueryHandler {
     }
 
 
+    //Metóda, ktorá sa volá po zbehnutí metódy startQuery a jej vrátení hodnôt
     @Override
     protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-        // Use the cursor to move through the returned records
+
         NewEvent event = new NewEvent();
         Log.d(TAG, "onQueryComplete: "+ event.getTitle());
 
         cursor.moveToFirst();
 
-        // Get the field values
         long calendarID = cursor.getLong(CALENDAR_ID_INDEX);
 
         if (BuildConfig.DEBUG)
@@ -57,7 +57,6 @@ public class QueryHandler extends AsyncQueryHandler {
         values.put(CalendarContract.Events.DTEND, EventNew.end);
         values.put(CalendarContract.Events.DESCRIPTION, EventNew.description);
 
-// TOTO SU VECI CO SA INSERTNU SKUTOCNE ako event
 
         Log.d(TAG, String.valueOf(CALENDAR_ID_INDEX));
         Log.d(TAG, TimeZone.getDefault().getDisplayName());
@@ -66,6 +65,7 @@ public class QueryHandler extends AsyncQueryHandler {
         startInsert(EVENT, null, CalendarContract.Events.CONTENT_URI, values);
     }
 
+    //Metóda, ktorá sa volá po pridaní udalosti do databázy a následne k udalosti priradí upozornenie
     @Override
     protected void onInsertComplete(int token, Object cookie, Uri uri) {
         if (uri != null)
@@ -88,7 +88,7 @@ public class QueryHandler extends AsyncQueryHandler {
         }
     }
 
-    // insertEvent
+    // Pridanie udalosti do kalendára
     public static void insertEvent(Context context) {
         ContentResolver resolver = context.getContentResolver();
 
@@ -103,6 +103,7 @@ public class QueryHandler extends AsyncQueryHandler {
             Log.d(TAG, String.valueOf(CALENDAR_PROJECTION));
             Log.d(TAG, String.valueOf(CalendarContract.Calendars.CONTENT_URI));
 
+            // Prechádzanie údajov v databáze a ich následné poslanie potrebných hodnôt nasledujúcej metóde
         queryHandler.startQuery(CALENDAR, values, CalendarContract.Calendars.CONTENT_URI,
                 CALENDAR_PROJECTION, null, null, null);
 

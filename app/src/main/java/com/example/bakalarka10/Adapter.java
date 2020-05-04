@@ -33,6 +33,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
 
     }
 
+    // ViewHolder slúží ako držiteľ hodnôt pre ich správne zobrazenie
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textTitle, textDescription, startTime, endTime;
@@ -56,6 +57,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
         return new ViewHolder(view);
     }
 
+    // Táto metóda zabezpečí, že správne hodnoty budú v správnych poliach
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int pos) {
         viewHolder.textTitle.setText(events.get(pos).title);
@@ -115,6 +117,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> implements
     };
 
 
+    //Vymazanie údaju z RecyclerView
     public String deleteEvent(int position){
 
 

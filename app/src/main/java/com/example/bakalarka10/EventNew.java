@@ -1,5 +1,7 @@
 package com.example.bakalarka10;
 
+
+//Model novej udalosti
 public class EventNew {
 
     static String title;

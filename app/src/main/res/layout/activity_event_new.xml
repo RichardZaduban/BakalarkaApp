@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/starting_date"
             android:inputType="datetime"
-            android:hint="From"
+            android:hint="From: YYYY-MM-DD HHH:MM"
             android:textSize="20sp"
             />
     </android.support.design.widget.TextInputLayout>
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/ending_date"
             android:inputType="datetime"
-            android:hint="To"
+            android:hint="To:      YYYY-MM-DD HHH:MM"
             android:textSize="20sp"
             />
     </android.support.design.widget.TextInputLayout>

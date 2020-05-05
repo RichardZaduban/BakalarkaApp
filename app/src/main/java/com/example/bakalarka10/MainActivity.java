@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                if (direction == ItemTouchHelper.LEFT) {
+                if ((direction == ItemTouchHelper.LEFT) || (direction == ItemTouchHelper.RIGHT) ) {
                String eventToDelete = adapter.deleteEvent(position);
 
                     final String DEBUG_TAG = "Start delete";
